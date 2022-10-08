@@ -1,6 +1,10 @@
 ## SubPM
 **Sub**module-like **P**ackage **M**anager Standalone Gradle
 
+## Limitation
+Since Gradle task is non-interactive, when the needed processes (git pull, git clone) needed interactive mode it'll be error.
+This method suitable for those who are using public repositories, or already set up their ssh-based git (and make sure to add git domains to known-hosts before using this)
+
 ## How to use
 1. Copy subpm, subpm.bat, subpm.sh to your gradle project root
 2. Open your root project settings.gradle/settings.gradle.kts
