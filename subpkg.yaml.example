@@ -1,0 +1,2 @@
+packages:
+  coba: https://github.com/username/repo.git#branch_or_tags_or_hash
