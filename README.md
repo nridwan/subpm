@@ -7,8 +7,14 @@ submodules at its latest condition without affecting repo
 changelog, since submodules is locking the version using hash
 and needed to be commited to the repo
 
+## Other Versions
+Please see [standalone_src](standalone_src/README.md) docs
+
 ## How to Build
-use IntelliJ > Build > Build Artifacts
+run `./gradlew release`\
+Note: if you build on lower JDK version, you can run it in higher JDK, but not otherwise.
+(optional), preferable to build using JDK 1.8\
+Output jar will be in build\libs\subpm_proguard.jar
 
 ## How to use
 ### Option 1:

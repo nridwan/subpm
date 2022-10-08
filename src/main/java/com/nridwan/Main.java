@@ -25,17 +25,22 @@ public class Main {
                     System.out.println("File "+path+" not found");
                 }
             }
-            res.getPackages().forEach((path, url) -> clonePackage(new File(cwd), path, url));
+            boolean clone = !option.getActionType().equals("update");
+            boolean reset = option.getActionType().equals("reset");
+            res.getPackages().forEach((path, url) -> clonePackage(new File(cwd), path, url, clone, reset));
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
-    private static void clonePackage(File cwd, String path, String url) {
+    private static void clonePackage(File cwd, String path, String url, boolean clone, boolean reset) {
         if(url == null) return;
         String[] urlParts = url.split("#");
         File file = new File(cwd, path);
-        if (!file.exists()) {
+        if (reset && file.exists()) {
+            deleteDirectory(file);
+        }
+        if (!file.exists() && clone) {
             try {
                 ProcessBuilder builder = new ProcessBuilder("git", "clone", urlParts[0], path);
                 builder.redirectErrorStream(true);
@@ -81,4 +86,15 @@ public class Main {
             t.printStackTrace();
         }
     }
+
+    private static boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
+
 }
