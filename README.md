@@ -23,6 +23,7 @@ Output jar will be in build\libs\subpm_proguard.jar
 3. run `java -jar path/to/subpm.jar`
 ### Option 2:
 1. place any yaml that fulfill the subpkg.yaml format inside your target directory, you can have multiple files of these
-2. run `java -jar path/to/subpm.jar --files file1.yaml file2.yaml etc.yaml`\
+2. run `java -jar path/to/subpm.jar --files file1.yaml file2.yaml etc.yaml`. Note: place the file in orders, this ensures the latter will always override the previous file
+### Note
+I've added shortcut script in [script](script) directory that contains batch/bash script, make sure it's put in the same directory as subpm.jar (same name), or edit it as your own needs
 
-Note: place the file in orders, this ensures the latter will always override the previous file
