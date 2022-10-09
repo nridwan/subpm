@@ -53,6 +53,19 @@ public class Main {
                 t.printStackTrace();
                 return;
             }
+        } else {
+            try {
+                ProcessBuilder builder = new ProcessBuilder("git", "fetch");
+                builder.redirectErrorStream(true);
+                builder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+                builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                builder.directory(cwd);
+                Process process = builder.start();
+                process.waitFor();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                return;
+            }
         }
         if (!file.exists()) {
             System.out.println("Error, subpackage " + path + " (" + url + ") cannot be resolved");

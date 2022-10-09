@@ -73,6 +73,19 @@ abstract class SubPM : DefaultTask() {
                 t.printStackTrace()
                 return
             }
+        } else {
+            try {
+                val builder = ProcessBuilder("git", "fetch")
+                builder.redirectErrorStream(true)
+                builder.redirectInput(java.lang.ProcessBuilder.Redirect.INHERIT)
+                builder.redirectOutput(java.lang.ProcessBuilder.Redirect.INHERIT)
+                builder.directory(cwd)
+                val process: java.lang.Process = builder.start()
+                process.waitFor()
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                return
+            }
         }
         if (!file.exists()) {
             println("Error, subpackage $path ($url) cannot be resolved")
