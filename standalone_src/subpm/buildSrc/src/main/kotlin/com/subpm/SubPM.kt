@@ -8,9 +8,8 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
+
+import java.io.*
 
 
 abstract class SubPM : DefaultTask() {
@@ -45,7 +44,7 @@ abstract class SubPM : DefaultTask() {
                     clonePackage(File(cwd), path, url, reset = true)
                 }
                 else -> { (path, url) ->
-                    clonePackage(File(cwd), path, url, clone = false)
+                    clonePackage(File(cwd), path, url, clone = true)
                 }
             })
         } catch (t: Throwable) {
@@ -108,15 +107,39 @@ abstract class SubPM : DefaultTask() {
             t.printStackTrace()
             return
         }
-        try {
-            val builder = ProcessBuilder("git", "pull")
+        if (isBranch(cwd)) {
+            try {
+                val builder = ProcessBuilder("git", "reset", "--hard", "origin/$hash")
+                builder.redirectErrorStream(true)
+                builder.redirectInput(java.lang.ProcessBuilder.Redirect.INHERIT)
+                builder.directory(cwd)
+                val process: Process = builder.start()
+                process.waitFor()
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+        }
+    }
+
+    private fun isBranch(cwd: File): Boolean {
+        return try {
+            val builder = ProcessBuilder("git", "symbolic-ref", "-q", "HEAD")
             builder.redirectErrorStream(true)
-            builder.redirectInput(ProcessBuilder.Redirect.INHERIT)
             builder.directory(cwd)
-            val process = builder.start()
+            val process: Process = builder.start()
             process.waitFor()
+            val reader = BufferedReader(InputStreamReader(process.getInputStream()))
+            val sb = StringBuilder()
+            var line: String? = null
+            while (reader.readLine().also { line = it } != null) {
+                sb.append(line)
+                sb.append(java.lang.System.getProperty("line.separator"))
+            }
+            val result: String = sb.toString()
+            !result.isBlank()
         } catch (t: Throwable) {
             t.printStackTrace()
+            false
         }
     }
 }

@@ -12,7 +12,13 @@ public class PackageList {
     }
 
     public void merge(PackageList others) {
-        packages.putAll(others.packages);
+        others.packages.forEach((k, v) -> {
+            if(v.contains("#") || !packages.containsKey(k) || !packages.get(k).contains("#")) {
+                packages.put(k, v);
+                return;
+            }
+            packages.put(k, v+"#"+packages.get(k).split("#")[1]);
+        });
     }
 
     private HashMap<String, String> packages = new HashMap<>();

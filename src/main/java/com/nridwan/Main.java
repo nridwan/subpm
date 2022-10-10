@@ -5,9 +5,7 @@ import com.nridwan.model.PackageList;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -88,15 +86,17 @@ public class Main {
             t.printStackTrace();
             return;
         }
-        try {
-            ProcessBuilder builder = new ProcessBuilder("git", "pull");
-            builder.redirectErrorStream(true);
-            builder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-            builder.directory(cwd);
-            Process process = builder.start();
-            process.waitFor();
-        } catch (Throwable t) {
-            t.printStackTrace();
+        if(isBranch(cwd)) {
+            try {
+                ProcessBuilder builder = new ProcessBuilder("git", "reset", "--hard", "origin/"+hash);
+                builder.redirectErrorStream(true);
+                builder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+                builder.directory(cwd);
+                Process process = builder.start();
+                process.waitFor();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
     }
 
@@ -108,6 +108,29 @@ public class Main {
             }
         }
         return directoryToBeDeleted.delete();
+    }
+
+    private static boolean isBranch(File cwd) {
+        try {
+            ProcessBuilder builder = new ProcessBuilder("git", "symbolic-ref", "-q", "HEAD");
+            builder.redirectErrorStream(true);
+            builder.directory(cwd);
+            Process process = builder.start();
+            process.waitFor();
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ( (line = reader.readLine()) != null) {
+                sb.append(line);
+                sb.append(System.getProperty("line.separator"));
+            }
+            String result = sb.toString();
+            return !result.isBlank();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return false;
+        }
     }
 
 }

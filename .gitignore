@@ -4,6 +4,7 @@
 *.ap_
 *.aab
 *.jar
+!gradle-wrapper.jar
 
 # Files for the ART/Dalvik VM
 *.dex
@@ -12,7 +13,7 @@
 *.class
 
 # Generated files
-idea/
+.idea/
 bin/
 gen/
 out/
@@ -31,3 +32,4 @@ local.properties
 
 # Subpkg yaml
 subpkg.yaml
+subpkg.local.yaml
