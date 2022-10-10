@@ -136,7 +136,7 @@ abstract class SubPM : DefaultTask() {
                 sb.append(java.lang.System.getProperty("line.separator"))
             }
             val result: String = sb.toString()
-            !result.isBlank()
+            result.trim { it <= ' ' }.length > 0
         } catch (t: Throwable) {
             t.printStackTrace()
             false

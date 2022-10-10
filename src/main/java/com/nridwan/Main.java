@@ -126,7 +126,7 @@ public class Main {
                 sb.append(System.getProperty("line.separator"));
             }
             String result = sb.toString();
-            return !result.isBlank();
+            return result.trim().length() > 0;
         } catch (Throwable t) {
             t.printStackTrace();
             return false;
